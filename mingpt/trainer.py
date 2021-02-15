@@ -105,14 +105,17 @@ class Trainer:
                         for param_group in optimizer.param_groups:
                             param_group['lr'] = lr
                     else:
-                        lr = config.learning_rate
-
+                        lr = config.learning_rate                    
+                        
                     # report progress
-                    pbar.set_description(f"epoch {epoch+1} iter {it}: train loss {loss.item():.5f}. lr {lr:e}")
+                    pbar.set_description(
+                        f"""epoch {epoch+1} iter {it}: train loss {loss.item():.5f}, """
+                        f"""train bpd {loss.item()/np.log(2):.5f}, lr {lr:e}"""
+                    )                    
 
             if not is_train:
                 test_loss = float(np.mean(losses))
-                logger.info("test loss: %f", test_loss)
+                logger.info("test loss: %.4f, test bpd: %.4f" % (test_loss, test_loss/np.log(2)))
                 return test_loss
 
         best_loss = float('inf')
